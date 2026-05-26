@@ -7,6 +7,47 @@ Minim minim;
 AudioOutput out;
 Oscil wave;
 
+float[] notes = {523.3, 587.3, 523.3, 587.3, 523.3, 440.0, 440.0, 493.9, 440.0, 493.9, 440.0, 349.2, 440.0, 349.2, 392.0, 440.0, 349.2, 392.0, 440.0, 493.9, 523.3, 523.3, 392.0, 440.0, 392.0, 523.3, 587.3, 523.3, 587.3, 523.3, 523.3, 440.0, 440.0, 440.0, 493.9, 440.0, 493.9, 261.6, 261.6, 349.2, 587.3, 523.3, 440.0, 523.3, 523.3, 440.0, 349.2, 261.6, 261.6, 392.0, 392.0, 329.6};
+int index = 0;
+
+void setup() {
+  size(400, 200);
+
+  println(Serial.list());   // ポート確認用
+  myPort = new Serial(this, Serial.list()[0], 9600);
+
+  minim = new Minim(this);
+  out = minim.getLineOut();
+
+  wave = new Oscil(notes[0], 0.5, Waves.SINE);
+  wave.patch(out);
+}
+
+void draw() {
+  background(0);
+
+  if (myPort.available() > 0) {
+    String data = myPort.readStringUntil('\n');
+
+    if (data != null) {
+      data = trim(data);
+
+      if (data.equals("B")) {
+        playNextNote();
+      }
+    }
+  }
+}
+
+void playNextNote() {
+  wave.setFrequency(notes[index]);
+
+  index++;
+  if (index >= notes.length) {
+    index = 0;
+  }
+}
+
 
 
 //音階
