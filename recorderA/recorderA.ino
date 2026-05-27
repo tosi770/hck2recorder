@@ -10,7 +10,7 @@ void setup() {
 
 void loop() {
   Serial.println("B");
-  delay(beat[index]*1000);
+  delay(beat[index]*750);
   index++;
   if (index >= beatlength) {
     index = 0;

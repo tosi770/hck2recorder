@@ -20,7 +20,7 @@ void setup() {
   minim = new Minim(this);
   out = minim.getLineOut();
 
-  wave = new Oscil(notes[0], 0.5, Waves.SINE);
+  wave = new Oscil(notes[0], 0.5, Waves.TRIANGLE);
   wave.patch(out);
 }
 
