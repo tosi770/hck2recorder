@@ -22,8 +22,11 @@ void setup() {
 
 minim = new Minim(this);
 Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
+for (int i = 0; i < mixerInfo.length; i++) {
+  println(i + " = " + mixerInfo[i].getName());
+}
 
-Mixer mixer = AudioSystem.getMixer(mixerInfo[9]);
+Mixer mixer = AudioSystem.getMixer(mixerInfo[5]);
 minim.setOutputMixer(mixer); 
 
   out = minim.getLineOut(Minim.STEREO, 2048);
@@ -82,7 +85,7 @@ void playNextNote() {
   if (index >= notes.length) {
     index = 0;
   }
-  delay(300);
+  delay(600);
   envelope.noteOff();
 }
 
