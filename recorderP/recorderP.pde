@@ -1,6 +1,7 @@
 import processing.serial.*;
 import ddf.minim.*;
 import ddf.minim.ugens.*;
+import javax.sound.sampled.*;
 
 Serial myPort;
 Minim minim;
@@ -15,11 +16,17 @@ int index = 0;
 void setup() {
   size(400, 200);
   pixelDensity(1);
-  println(Serial.list());   // ポート確認用
-  myPort = new Serial(this, Serial.list()[3], 9600);
+  //音確認だけしたいため一時無効化
+  //println(Serial.list());   // ポート確認用
+  //myPort = new Serial(this, Serial.list()[3], 9600);
 
-  minim = new Minim(this);
-  out = minim.getLineOut();
+minim = new Minim(this);
+Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
+
+Mixer mixer = AudioSystem.getMixer(mixerInfo[9]);
+minim.setOutputMixer(mixer); 
+
+  out = minim.getLineOut(Minim.STEREO, 2048);
   
   envelope = new ADSR(
   0.5,0.05,0.02,0.85,0.08);
@@ -29,30 +36,54 @@ void setup() {
   wave.patch(envelope).patch(out);
 }
 
+//音確認だけしたいため一時無効化
+//void draw() {
+//  background(0);
+  
+//  if (myPort.available() > 0) {
+//    String data = myPort.readStringUntil('\n');
+
+//    if (data != null) {
+//      data = trim(data);
+
+//      if (data.equals("B")) {
+//        playNextNote();
+//      }
+//    }
+//  }
+//}
+
+//音確認用
 void draw() {
   background(0);
-  
-  if (myPort.available() > 0) {
-    String data = myPort.readStringUntil('\n');
-
-    if (data != null) {
-      data = trim(data);
-
-      if (data.equals("B")) {
-        playNextNote();
-      }
-    }
+  fill(255);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text("スペースキー: 次の音を鳴らす", width/2, height/2 - 20);
+  text("R キー: 最初に戻る", width/2, height/2 + 10);
+  text("音符: " + (index + 1) + " / " + notes.length, width/2, height/2 + 40);
+}
+//音確認用
+void keyPressed() {
+  if (key == ' ') {
+    playNextNote();   // スペースキーが"B"信号の代わり
+  } else if (key == 'r' || key == 'R') {
+    index = 0;        // 最初の音符に戻す（おまけ機能）
   }
 }
 
+
+
 void playNextNote() {
+  println("鳴らす: " + notes[index]);
   envelope.noteOn();
   wave.setFrequency(notes[index]);
-  envelope.noteOff();
   index++;
   if (index >= notes.length) {
     index = 0;
   }
+  delay(300);
+  envelope.noteOff();
 }
 
 
