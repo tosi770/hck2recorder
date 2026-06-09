@@ -25,7 +25,7 @@ void setup() {
   0.5,0.05,0.02,0.85,0.08);
   //max,attack,decay,sustain,release
 
-  wave = new Oscil(notes[0], 0.5, Waves.TRIANGLE);
+  wave = new Oscil(notes[0], 0.5, Waves.SINE);
   wave.patch(envelope).patch(out);
 }
 
