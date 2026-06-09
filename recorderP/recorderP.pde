@@ -6,7 +6,7 @@ Serial myPort;
 Minim minim;
 AudioOutput out;
 Oscil wave;
-
+ADSR envelope;
 
 float[] notes = {523.3, 587.3, 523.3, 587.3, 523.3, 440.0, 440.0, 466.2, 440.0, 466.2, 440.0, 349.2, 440.0, 349.2, 392.0, 440.0, 349.2, 392.0, 440.0, 466.2, 523.3, 523.3, 392.0, 440.0, 392.0, 523.3, 587.3, 523.3, 587.3, 523.3, 523.3, 440.0, 440.0, 440.0, 466.2, 440.0, 466.2, 440.0, 440.0, 349.2, 587.3, 523.3, 440.0, 523.3, 523.3, 440.0, 349.2, 440.0, 440.0, 392.0, 392.0, 349.2};
 float[] beat = {0.75,0.25,0.75,0.25,1.0,0.5,0.75,0.25,0.75,0.25,1.0,0.5,1.0,0.5,0.5,1.0,0.5,0.5,0.75,0.25,0.5,0.5,0.75,0.25,0.5,0.75,0.25,0.75,0.25,0.5,0.5,0.5,0.5,0.75,0.25,0.75,0.25,0.5,0.5,0.5,1.0,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.75,0.25,1.0};
@@ -20,9 +20,13 @@ void setup() {
 
   minim = new Minim(this);
   out = minim.getLineOut();
+  
+  envelope = new ADSR(
+  0.5,0.05,0.02,0.85,0.08);
+  //max,attack,decay,sustain,release
 
   wave = new Oscil(notes[0], 0.5, Waves.TRIANGLE);
-  wave.patch(out);
+  wave.patch(envelope).patch(out);
 }
 
 void draw() {
@@ -42,8 +46,9 @@ void draw() {
 }
 
 void playNextNote() {
+  envelope.noteOn();
   wave.setFrequency(notes[index]);
-
+  envelope.noteOff();
   index++;
   if (index >= notes.length) {
     index = 0;
