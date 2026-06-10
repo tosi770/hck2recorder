@@ -7,7 +7,7 @@ Serial myPort;
 Minim minim;
 AudioOutput out;
 Oscil wave;
-Oscil wave3;
+Oscil wave2;
 Oscil volumeVibrato;
 ADSR envelope;
 
@@ -37,12 +37,12 @@ void setup() {
   0.5,0.05,0.02,0.85,0.08);
   //max,attack,decay,sustain,release
   wave = new Oscil(notes[0], 0.5, Waves.SINE);          // 基音
-  wave3 = new Oscil(notes[0]*3, 0.05, Waves.SINE); // 第3倍音
+  wave2 = new Oscil(notes[0]*2, 0.05, Waves.SINE); // 第2倍音
   volumeVibrato = new Oscil(5.0, 0.3, Waves.SINE);
   volumeVibrato.offset.setLastValue(0.5);
   volumeVibrato.patch(wave.amplitude);
   wave.patch(envelope).patch(out);
-  wave3.patch(envelope).patch(out);
+  wave2.patch(envelope).patch(out);
 }
 
 //音確認だけしたいため一時無効化
@@ -87,7 +87,7 @@ void playNextNote() {
   println("鳴らす: " + notes[index]);
   envelope.noteOn();
 wave.setFrequency(notes[index]);
-wave3.setFrequency(notes[index] * 3);
+wave2.setFrequency(notes[index] * 2);
   index++;
   if (index >= notes.length) {
     index = 0;
