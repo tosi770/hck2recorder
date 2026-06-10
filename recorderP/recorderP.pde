@@ -37,7 +37,7 @@ void setup() {
   0.5,0.05,0.02,0.85,0.08);
   //max,attack,decay,sustain,release
   wave = new Oscil(notes[0], 0.5, Waves.SINE);          // 基音
-  wave2 = new Oscil(notes[0]*2, 0.05, Waves.SINE); // 第2倍音
+  wave2 = new Oscil(notes[0]*2, 0.05, Waves.SINE); // 2倍音
   volumeVibrato = new Oscil(5.0, 0.3, Waves.SINE);
   volumeVibrato.offset.setLastValue(0.5);
   volumeVibrato.patch(wave.amplitude);
