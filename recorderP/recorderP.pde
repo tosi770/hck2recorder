@@ -7,6 +7,7 @@ Serial myPort;
 Minim minim;
 AudioOutput out;
 Oscil wave;
+Oscil wave3;
 ADSR envelope;
 
 float[] notes = {523.3, 587.3, 523.3, 587.3, 523.3, 440.0, 440.0, 466.2, 440.0, 466.2, 440.0, 349.2, 440.0, 349.2, 392.0, 440.0, 349.2, 392.0, 440.0, 466.2, 523.3, 523.3, 392.0, 440.0, 392.0, 523.3, 587.3, 523.3, 587.3, 523.3, 523.3, 440.0, 440.0, 440.0, 466.2, 440.0, 466.2, 440.0, 440.0, 349.2, 587.3, 523.3, 440.0, 523.3, 523.3, 440.0, 349.2, 440.0, 440.0, 392.0, 392.0, 349.2};
@@ -35,8 +36,10 @@ minim.setOutputMixer(mixer);
   0.5,0.05,0.02,0.85,0.08);
   //max,attack,decay,sustain,release
 
-  wave = new Oscil(notes[0], 0.5, Waves.SINE);
-  wave.patch(envelope).patch(out);
+wave = new Oscil(notes[0], 0.5, Waves.SINE);          // 基音
+wave3 = new Oscil(notes[0]*3, 0.05, Waves.SINE); // 第3倍音
+wave.patch(envelope).patch(out);
+wave3.patch(envelope).patch(out);
 }
 
 //音確認だけしたいため一時無効化
@@ -80,7 +83,8 @@ void keyPressed() {
 void playNextNote() {
   println("鳴らす: " + notes[index]);
   envelope.noteOn();
-  wave.setFrequency(notes[index]);
+wave.setFrequency(notes[index]);
+wave3.setFrequency(notes[index] * 3);
   index++;
   if (index >= notes.length) {
     index = 0;
