@@ -8,6 +8,7 @@ Minim minim;
 AudioOutput out;
 Oscil wave;
 Oscil wave3;
+Oscil volumeVibrato;
 ADSR envelope;
 
 float[] notes = {523.3, 587.3, 523.3, 587.3, 523.3, 440.0, 440.0, 466.2, 440.0, 466.2, 440.0, 349.2, 440.0, 349.2, 392.0, 440.0, 349.2, 392.0, 440.0, 466.2, 523.3, 523.3, 392.0, 440.0, 392.0, 523.3, 587.3, 523.3, 587.3, 523.3, 523.3, 440.0, 440.0, 440.0, 466.2, 440.0, 466.2, 440.0, 440.0, 349.2, 587.3, 523.3, 440.0, 523.3, 523.3, 440.0, 349.2, 440.0, 440.0, 392.0, 392.0, 349.2};
@@ -21,25 +22,27 @@ void setup() {
   //println(Serial.list());   // ポート確認用
   //myPort = new Serial(this, Serial.list()[3], 9600);
 
-minim = new Minim(this);
-Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
-for (int i = 0; i < mixerInfo.length; i++) {
-  println(i + " = " + mixerInfo[i].getName());
-}
+  minim = new Minim(this);
+  Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
+  for (int i = 0; i < mixerInfo.length; i++) {
+    println(i + " = " + mixerInfo[i].getName());
+  }
 
-Mixer mixer = AudioSystem.getMixer(mixerInfo[5]);
-minim.setOutputMixer(mixer); 
+  Mixer mixer = AudioSystem.getMixer(mixerInfo[5]);
+  minim.setOutputMixer(mixer); 
 
   out = minim.getLineOut(Minim.STEREO, 2048);
   
   envelope = new ADSR(
   0.5,0.05,0.02,0.85,0.08);
   //max,attack,decay,sustain,release
-
-wave = new Oscil(notes[0], 0.5, Waves.SINE);          // 基音
-wave3 = new Oscil(notes[0]*3, 0.05, Waves.SINE); // 第3倍音
-wave.patch(envelope).patch(out);
-wave3.patch(envelope).patch(out);
+  wave = new Oscil(notes[0], 0.5, Waves.SINE);          // 基音
+  wave3 = new Oscil(notes[0]*3, 0.05, Waves.SINE); // 第3倍音
+  volumeVibrato = new Oscil(5.0, 0.3, Waves.SINE);
+  volumeVibrato.offset.setLastValue(0.5);
+  volumeVibrato.patch(wave.amplitude);
+  wave.patch(envelope).patch(out);
+  wave3.patch(envelope).patch(out);
 }
 
 //音確認だけしたいため一時無効化
